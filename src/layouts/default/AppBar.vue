@@ -11,7 +11,11 @@
       />
     </v-app-bar-title>
     <v-spacer></v-spacer>
-    <v-btn><img class="mr-2 mini-art" :src="useStore.art" height="32" /> {{useStore.artist}} - {{ useStore.title }}</v-btn>
+    <v-tooltip :text="`${useStore.artist} - ${useStore.title}`" location="bottom">
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props" class="mr-4"><img class="mr-2 mini-art" :src="useStore.art" height="32" /> <span class="d-inline-block text-truncate" style="max-width: 250px;">{{useStore.artist}} - {{ useStore.title }}</span></v-btn>
+      </template>
+    </v-tooltip>
   </v-app-bar>
 </template>
 
