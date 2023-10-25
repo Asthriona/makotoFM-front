@@ -7,15 +7,38 @@
   >
     <v-footer padless>
       <v-row justify="center" no-gutters>
-        <div class="links" v-for="link in links" :key="link.name">
-          <router-link :to="link.link">
+  
+        
+        <div class="links">
+          <!-- <div class="links" v-for="link in links" :key="link.name"> -->
+          <!-- changelogs -->
+          <v-dialog>
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props" text="ChangeLogs" class="mb-2 mt-2"></v-btn>
+      </template>
+      <template v-slot:default="{ isActive }">
+        <v-card title="Change Logs">
+          <v-card-text>
+            <changelogs />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text="Close" @click="isActive.value = false"></v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
+    <!-- End Changelogs -->
+
+    <!-- <router-link :to="link.link">
             <v-btn
               :key="link.name"
               class="my-2 nolink"
             >
               {{ link.name }}
             </v-btn>
-          </router-link>
+          </router-link> -->
         </div>
         <v-card flat tile width="100%" class="primary lighten-2 text-center">
           <v-btn
@@ -53,6 +76,10 @@
     </v-footer>
   </div>
 </template>
+
+<script setup>
+import changelogs from "@/components/changelogs.vue";
+</script>
 
 <script>
 // import { EventBus } from '../../event-bus';
