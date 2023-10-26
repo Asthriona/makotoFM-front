@@ -10,7 +10,10 @@
         width="200"
       />
     </v-app-bar-title>
+    <router-link to="/"><v-btn>Home</v-btn></router-link>
+    <router-link to="/about"><v-btn>About</v-btn></router-link>
     <v-spacer></v-spacer>
+
     <v-tooltip :text="`${useStore.artist} - ${useStore.title}`" location="bottom">
       <template v-slot:activator="{ props }">
         <v-btn v-bind="props" class="mr-4"><img class="mr-2 mini-art" :src="useStore.art" height="32" /> <span class="d-inline-block text-truncate" style="max-width: 250px;">{{useStore.artist}} - {{ useStore.title }}</span></v-btn>
