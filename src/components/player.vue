@@ -11,7 +11,7 @@
       >
     </div>
     <div class="player-info">
-      <div class="player-info-img hidden-sm-and-down">
+      <div class="player-info-img hidden-xs-and-down">
         <transition name="slide-fade" mode="out-in">
           <v-img :key="metadata.art" :src="metadata.art"></v-img>
         </transition>
@@ -36,74 +36,74 @@
       </div>
     </div>
     <br />
-    <div class="player-controls">
-      <div class="controls-status">
-        <span v-if="!playing && !buffering && !playerError">
-          <v-icon @click="play()" size="50">mdi-play-circle-outline</v-icon>
-        </span>
-        <span v-else-if="playing && !buffering">
-          <v-icon @click="stop()" size="50">mdi-stop-circle-outline</v-icon>
-        </span>
-        <span v-else-if="buffering">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-            size="50"
-          ></v-progress-circular>
-        </span>
-        <span v-else-if="playerError == true">
-          <v-icon @click="play()" size="50">mdi-alert</v-icon>
-        </span>
-      </div>
-      <div class="controls-volume">
-        <v-icon size="50">mdi-volume-high</v-icon>
-        <input
-          type="range"
-          name="volume"
-          v-model="volume"
-          min="0"
-          max="1"
-          step=".01"
-          @input="HandleVolume"
-        />
-      </div>
-      <div class="contols-options">
-        <!-- Options meny -->
+  </div>
+  <div class="player-controls">
+    <div class="controls-status">
+      <span v-if="!playing && !buffering && !playerError">
+        <v-icon @click="play()" size="50">mdi-play-circle-outline</v-icon>
+      </span>
+      <span v-else-if="playing && !buffering">
+        <v-icon @click="stop()" size="50">mdi-stop-circle-outline</v-icon>
+      </span>
+      <span v-else-if="buffering">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="50"
+        ></v-progress-circular>
+      </span>
+      <span v-else-if="playerError == true">
+        <v-icon @click="play()" size="50">mdi-alert</v-icon>
+      </span>
+    </div>
+    <div class="controls-volume">
+      <v-icon size="50">mdi-volume-high</v-icon>
+      <input
+        type="range"
+        name="volume"
+        v-model="volume"
+        min="0"
+        max="1"
+        step=".01"
+        @input="HandleVolume"
+      />
+    </div>
+    <div class="contols-options">
+      <!-- Options meny -->
 
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn icon v-bind="props" class="mr-2 ml-2">
-              <v-icon size="35">mdi-cog-outline</v-icon></v-btn
-            >
-          </template>
-          <v-list>
-            <v-list-item @click="enableNotif()">
-              <v-list-item-title>Enable Notifications</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="disableNotif()">
-              <v-list-item-title>Disable Notifications</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props" class="mr-2 ml-2">
+            <v-icon size="35">mdi-cog-outline</v-icon></v-btn
+          >
+        </template>
+        <v-list>
+          <v-list-item @click="enableNotif()">
+            <v-list-item-title>Enable Notifications</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="disableNotif()">
+            <v-list-item-title>Disable Notifications</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
 
-      <div class="control-sources">
-        <!-- Source Options button -->
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn icon v-bind="props">
-              <v-icon size="35"> mdi-playlist-music-outline </v-icon></v-btn
-            >
-          </template>
-          <v-list>
-            <v-list-item v-for="source in streams" :key="source.name">
-              <v-list-item-title @click="changeSource(source)">{{
-                source.name
-              }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+    <div class="control-sources">
+      <!-- Source Options button -->
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props">
+            <v-icon size="35"> mdi-playlist-music-outline </v-icon></v-btn
+          >
+        </template>
+        <v-list>
+          <v-list-item v-for="source in streams" :key="source.name">
+            <v-list-item-title class="hover-pointer" @click="changeSource(source)">{{
+              source.name
+            }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
   </div>
 </template>
@@ -116,6 +116,7 @@ export default {
   props: ["metadata"],
   data() {
     return {
+      notifData: "",
       track: {
         title: "Hello!",
         artist: "Cloudsdale Radio",
@@ -175,8 +176,10 @@ export default {
       // Notification
       if (!this.notifEnabled) return;
       if (!this.notificationPermissions) return;
+      if(this.notifData == `${data.title} - ${data.artist}`) return;
+      this.notifData = `${data.title} - ${data.artist}`;
       const notifText = `${data.title} - ${data.artist}`;
-      const notifTitle = "Cloudsdale Radio";
+      const notifTitle = "MakotoFM";
       const notifArt =
         data.art ||
         "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png";
@@ -329,7 +332,7 @@ export default {
   cursor: pointer;
 }
 .hover-pointer {
-  background: #fff;
+  background: #272727;
 }
 .hover-pointer:hover {
   background: #929292;
