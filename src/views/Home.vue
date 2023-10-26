@@ -3,11 +3,11 @@
 </template>
 
 <script setup>
-  import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from "@/components/HelloWorld.vue";
 </script>
 
 <script>
 export default {
-  name: "home-view"
-}
+  name: "home-view",
+};
 </script>
