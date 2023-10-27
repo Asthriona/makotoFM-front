@@ -12,10 +12,11 @@
         <v-col cols="auto">
           <Player :metadata="useStore" />
         </v-col>
-
-        <!-- <v-col cols="auto">
-         <h1>Other Buttons</h1>
-        </v-col> -->
+      </v-row>
+      <v-row>
+        <v-col class="d-flex align-center justify-center">
+          <playNext />
+        </v-col>
       </v-row>
     </v-responsive>
   </v-container>
@@ -29,6 +30,7 @@ export default {
 
 <script setup>
   import Player from './player.vue';
+  import playNext from "@/components/metadata/playNext.vue"
   import { useMetaStore } from '@/store/metadata';
   const useStore = useMetaStore();
 </script>
