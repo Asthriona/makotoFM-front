@@ -7,10 +7,10 @@
       </div>
       <div class="track-info-text mt-4">
         <transition name="slide-fade" mode="out-in">
-          <span class="track-title">{{ useStore.title }}</span>
+          <span class="text-h4">{{ useStore.title }}</span>
         </transition>
         <transition name="slide-fade" mode="out-in">
-          <span class="track-artist">{{ useStore.artist }}</span>
+          <span class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.artist }}</span>
         </transition>
       </div>
     </div>

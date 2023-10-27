@@ -1,18 +1,12 @@
 <template>
   <div class="player-info">
     <div class="player-info-img hidden-xs-and-down">
-      <transition name="slide-fade" mode="out-in">
-        <v-img :src="useStore.next.art"></v-img>
-      </transition>
+        <v-img transition="scroll-x-transition" :src="useStore.next.art"></v-img>
     </div>
     <div class="track-info-text mt-4">
-      <transition name="slide-fade" mode="out-in">
-        <span class="track-title">{{ useStore.next.title }}</span>
-      </transition>
-      <transition name="slide-fade" mode="out-in">
-        <span class="track-artist">{{ useStore.next.artist }}</span>
-      </transition>
-      <span>Playing {{ useStore.next.played_ago }}</span>
+        <span transition="scroll-x-transition" class="text-h4">{{ useStore.next.title }}</span>
+        <span transition="scroll-x-transition" class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.next.artist }}</span>
+      <span transition="scroll-x-transition">Playing {{ useStore.next.played_ago }}</span>
     </div>
   </div>
 </template>
