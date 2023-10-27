@@ -11,14 +11,26 @@ const metaStore = useMetaStore();
 function getMetaData() {
   axios.get(`${import.meta.env.VITE_APP_API}/player/nowplaying`)
   .then((res) => {
-    const { title, artist, album, art, isLive} = res.data;
+    const { title, artist, album, art, isLive} = res.data.now;
+    const next = res.data.next;
     console.log(`[DEBUG] Got data from Radio: ${artist} - ${title}`);
     metaStore.setMetadata({
       title,
       artist,
       album,
       art,
-      isLive
+      isLive,
+      next: {
+        title: next.title,
+        artist: next.artist,
+        album: next.album,
+        art: next.art,
+        isLive: next.isLive,
+        isRequest: next.isRequest,
+        played_ago: next.played_ago,
+        played_at: next.played_at,
+        id: next.id,
+      }
     })
   })
   .catch((err) => {
