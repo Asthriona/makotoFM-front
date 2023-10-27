@@ -1,42 +1,12 @@
 <template>
-  <div class="player">
-    <div class="backup-alert" v-if="current.name == 'backup'">
-      <!-- span text red -->
-      <span class="red--text"
-        ><b> You are listening to our backup streams</b></span
-      >
-      <br />
-      <span class="red--text"
-        ><b> Songs titles, artist and artwork may not be accurate.</b></span
-      >
-    </div>
-    <div class="player-info">
-      <div class="player-info-img hidden-xs-and-down">
-        <transition name="slide-fade" mode="out-in">
-          <v-img :key="metadata.art" :src="metadata.art"></v-img>
-        </transition>
-      </div>
-      <div class="track-info-text mt-4">
-        <transition name="slide-fade" mode="out-in">
-          <span
-            :key="current.name == 'backup' ? track.title : metadata.title"
-            class="track-title"
-            >{{ current.name == "backup" ? track.title : metadata.title }}</span
-          >
-        </transition>
-        <transition name="slide-fade" mode="out-in">
-          <span
-            :key="current.name == 'backup' ? track.artist : metadata.artist"
-            class="track-artist"
-            >{{
-              current.name == "backup" ? track.artist : metadata.artist
-            }}</span
-          >
-        </transition>
-      </div>
-    </div>
-    <br />
-  </div>
+  <v-container>
+    <v-row>
+      <now-playing />
+    </v-row>
+    </v-container>
+
+    <v-container>
+    <v-row class="mt-4">
   <div class="player-controls">
     <div class="controls-status">
       <span v-if="!playing && !buffering && !playerError">
@@ -106,173 +76,179 @@
       </v-menu>
     </div>
   </div>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import axios from "axios";
+import NowPlaying from "./metadata/nowPlaying.vue";
 
 export default {
-  name: "cr-player",
-  props: ["metadata"],
-  data() {
-    return {
-      notifData: "",
-      track: {
-        title: "Hello!",
-        artist: "Cloudsdale Radio",
-        art: "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png",
-      },
-      streams: [
-        {
-          name: "Main Stream",
-          url: "https://jp-broadcaster.cloudsdaleradio.com/mr-relay.mp3",
+    name: "cr-player",
+    props: ["metadata"],
+    data() {
+        return {
+            notifData: "",
+            track: {
+                title: "Hello!",
+                artist: "Cloudsdale Radio",
+                art: "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png",
+            },
+            streams: [
+                {
+                    name: "Main Stream",
+                    url: "https://jp-broadcaster.cloudsdaleradio.com/mr-relay.mp3",
+                },
+                // {
+                //   name: "Fail Safe (France)",
+                //   url: "http://151.115.76.153:8000/fallback.mp3",
+                // },
+                //   {
+                //     name: "Low Quality Stream",
+                //     url: "https://jp-broadcaster.cloudsdaleradio.com/cloudsdaleradio64.mp3",
+                //   },
+                //   {
+                //     name: "backup",
+                //     url: "https://frrelay.cloudsdaleradio.com/CloudsdaleRadio",
+                //   }
+            ],
+            index: 0,
+            current: {},
+            player: new Audio(),
+            playing: false,
+            buffering: false,
+            playerError: false,
+            volume: 50,
+            notificationPermissions: false,
+            notifEnabled: false,
+        };
+    },
+    methods: {
+        getMetadata() {
+            if (!this.current) {
+                return console.log("No streams available retying in 5 seconds");
+            }
         },
-          // {
-          //   name: "Fail Safe (France)",
-          //   url: "http://151.115.76.153:8000/fallback.mp3",
-          // },
-        //   {
-        //     name: "Low Quality Stream",
-        //     url: "https://jp-broadcaster.cloudsdaleradio.com/cloudsdaleradio64.mp3",
-        //   },
-        //   {
-        //     name: "backup",
-        //     url: "https://frrelay.cloudsdaleradio.com/CloudsdaleRadio",
-        //   }
-      ],
-      index: 0,
-      current: {},
-      player: new Audio(),
-      playing: false,
-      buffering: false,
-      playerError: false,
-      volume: 50,
-      notificationPermissions: false,
-      notifEnabled: false,
-    };
-  },
-  methods: {
-    getMetadata() {
-      if (!this.current) {
-        return console.log("No streams available retying in 5 seconds");
-      }
+        updateChrome() {
+            //   Google meta session
+            navigator.mediaSession.metadata = new window.MediaMetadata({
+                title: this.metadata.title,
+                artist: this.metadata.artist,
+                album: "Cloudsdale Radio",
+                artwork: [
+                    {
+                        src: this.metadata.art,
+                        sizes: "512x512",
+                        type: "image/png",
+                    },
+                ],
+            });
+        },
+        updateNotification(data) {
+            // Notification
+            if (!this.notifEnabled)
+                return;
+            if (!this.notificationPermissions)
+                return;
+            if (this.notifData == `${data.title} - ${data.artist}`)
+                return;
+            this.notifData = `${data.title} - ${data.artist}`;
+            const notifText = `${data.title} - ${data.artist}`;
+            const notifTitle = "MakotoFM";
+            const notifArt = data.art ||
+                "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png";
+            const notif = new Notification(notifTitle, {
+                body: notifText,
+                icon: notifArt,
+            });
+            notif.onclick = () => {
+                window.focus();
+                notif.close();
+            };
+            return notif;
+        },
+        play() {
+            this.buffering = false;
+            this.player.volume = localStorage.getItem("CR_volume") || 0.5;
+            this.player.preload = "none";
+            this.player.play().catch((err) => {
+                this.playerError = true;
+                this.buffering = false;
+                console.log(err);
+                console.log("The player goofed... falling back");
+                this.track.title = "The player goofed. Falling back...";
+                this.track.artist = "Yikes!";
+                this.player.play("https://jp-broadcaster.cloudsdaleradio.com/cloudsdaleradio.mp3");
+            });
+            this.player.addEventListener("playing", () => {
+                this.playing = true;
+                this.buffering = false;
+            });
+        },
+        stop() {
+            this.player.pause();
+            this.player.currentTime = 0;
+            this.playing = false;
+        },
+        HandleVolume() {
+            this.player.volume = this.volume;
+            localStorage.setItem("CR_volume", this.volume);
+        },
+        changeSource(source) {
+            // find the index of the stream in sources
+            this.index = this.streams.findIndex((s) => s.name === source.name);
+            // swap current, for new changed stream
+            this.current = source;
+            // set the player source to the new stream
+            this.player.src = source.url;
+            // play the new stream
+            this.play();
+        },
+        enableNotif() {
+            this.notifEnabled = true;
+            localStorage.setItem("CR_Notifs", this.notifEnabled);
+        },
+        disableNotif() {
+            this.notifEnabled = false;
+            localStorage.setItem("CR_Notifs", this.notifEnabled);
+        },
+        // get metadata for backup broadcaster
+        getBackupData() {
+            axios.get(`${process.env.VUE_APP_PLAYER}/rescue`).then((res) => {
+                this.track = res.data;
+            });
+        },
     },
-    updateChrome() {
-      //   Google meta session
-      navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: this.metadata.title,
-        artist: this.metadata.artist,
-        album: "Cloudsdale Radio",
-        artwork: [
-          {
-            src: this.metadata.art,
-            sizes: "512x512",
-            type: "image/png",
-          },
-        ],
-      });
+    created() {
+        this.buffering = true;
     },
-    updateNotification(data) {
-      // Notification
-      if (!this.notifEnabled) return;
-      if (!this.notificationPermissions) return;
-      if(this.notifData == `${data.title} - ${data.artist}`) return;
-      this.notifData = `${data.title} - ${data.artist}`;
-      const notifText = `${data.title} - ${data.artist}`;
-      const notifTitle = "MakotoFM";
-      const notifArt =
-        data.art ||
-        "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png";
-      const notif = new Notification(notifTitle, {
-        body: notifText,
-        icon: notifArt,
-      });
-      notif.onclick = () => {
-        window.focus();
-        notif.close();
-      };
-      return notif;
-    },
-    play() {
-      this.buffering = false;
-      this.player.volume = localStorage.getItem("CR_volume") || 0.5;
-      this.player.preload = "none";
-      this.player.play().catch((err) => {
-        this.playerError = true;
+    mounted() {
         this.buffering = false;
-        console.log(err);
-        console.log("The player goofed... falling back");
-        this.track.title = "The player goofed. Falling back...";
-        this.track.artist = "Yikes!";
-        this.player.play(
-          "https://jp-broadcaster.cloudsdaleradio.com/cloudsdaleradio.mp3"
-        );
-      });
-      this.player.addEventListener("playing", () => {
-        this.playing = true;
-        this.buffering = false;
-      });
+        this.current = this.streams[this.index];
+        this.player.src = this.current.url;
+        this.volume = localStorage.getItem("CR_volume") || 50;
+        // this.notifEnabled = localStorage.getItem("CR_Notifs");
+        this.notifEnabled = false;
+        Notification.requestPermission().then((result) => {
+            result === "granted"
+                ? (this.notificationPermissions = true)
+                : (this.notificationPermissions = false);
+        });
+        // Update chrome and notification based on timing
+        setInterval(() => {
+            if (this.current.name == "backup")
+                this.getBackupData();
+            this.updateChrome();
+            this.updateNotification(this.metadata);
+        }, 5000);
     },
-    stop() {
-      this.player.pause();
-      this.player.currentTime = 0;
-      this.playing = false;
+    beforeUnmount() {
+        if (!this.playing)
+            return;
+        this.player.pause();
     },
-    HandleVolume() {
-      this.player.volume = this.volume;
-      localStorage.setItem("CR_volume", this.volume);
-    },
-    changeSource(source) {
-      // find the index of the stream in sources
-      this.index = this.streams.findIndex((s) => s.name === source.name);
-      // swap current, for new changed stream
-      this.current = source;
-      // set the player source to the new stream
-      this.player.src = source.url;
-      // play the new stream
-      this.play();
-    },
-    enableNotif() {
-      this.notifEnabled = true;
-      localStorage.setItem("CR_Notifs", this.notifEnabled);
-    },
-    disableNotif() {
-      this.notifEnabled = false;
-      localStorage.setItem("CR_Notifs", this.notifEnabled);
-    },
-    // get metadata for backup broadcaster
-    getBackupData() {
-      axios.get(`${process.env.VUE_APP_PLAYER}/rescue`).then((res) => {
-        this.track = res.data;
-      });
-    },
-  },
-  created() {
-    this.buffering = true;
-  },
-  mounted() {
-    this.buffering = false;
-    this.current = this.streams[this.index];
-    this.player.src = this.current.url;
-    this.volume = localStorage.getItem("CR_volume") || 50;
-    // this.notifEnabled = localStorage.getItem("CR_Notifs");
-    this.notifEnabled = false;
-    Notification.requestPermission().then((result) => {
-      result === "granted"
-        ? (this.notificationPermissions = true)
-        : (this.notificationPermissions = false);
-    });
-    // Update chrome and notification based on timing
-    setInterval(() => {
-      if (this.current.name == "backup") this.getBackupData();
-      this.updateChrome();
-      this.updateNotification(this.metadata);
-    }, 5000);
-  },
-  beforeUnmount() {
-    if (!this.playing) return;
-    this.player.pause();
-  },
+    components: { NowPlaying }
 };
 </script>
 
@@ -280,37 +256,6 @@ export default {
 .player {
   max-width: fit-content;
   max-height: fit-content;
-}
-.player-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: max-content;
-}
-.player-info-img {
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-}
-.player-info-img img {
-  width: 100%;
-  height: 100%;
-}
-.track-info-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: left;
-  align-items: left;
-  margin-left: 20px;
-}
-.track-title {
-  font-size: 2rem;
-  font-weight: bold;
-}
-.track-artist {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: rgb(131, 131, 131);
 }
 .player-controls {
   display: flex;
