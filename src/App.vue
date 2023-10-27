@@ -14,6 +14,7 @@ function getMetaData() {
     const { title, artist, album, art, isLive} = res.data.now;
     const next = res.data.next;
     console.log(`[DEBUG] Got data from Radio: ${artist} - ${title}`);
+    console.log(`[DEBUG] Next Track: ${next.artist} - ${next.title} | ${next.isRequest ? "Is requested" : "Is not requested."}`)
     metaStore.setMetadata({
       title,
       artist,
