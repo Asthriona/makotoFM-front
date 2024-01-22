@@ -4,8 +4,9 @@
         <v-img transition="scroll-x-transition" :src="useStore.next.art"></v-img>
     </div>
     <div class="track-info-text mt-4">
-        <span transition="scroll-x-transition" class="text-h4">{{ useStore.next.title }}</span>
-        <span transition="scroll-x-transition" class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.next.artist }}</span>
+      <v-badge content="[Listener request]" v-if="useStore.next.isRequest == true"><span transition="scroll-x-transition" class="text-h4">{{ useStore.next.title }}</span></v-badge>
+      <span transition="scroll-x-transition" class="text-h4" v-else>{{ useStore.next.title }}</span>
+        <span transition="scroll-x-transition" class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.next.artist }} </span>
       <span transition="scroll-x-transition">Playing {{ useStore.next.played_ago }}</span>
     </div>
   </div>

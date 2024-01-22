@@ -18,7 +18,7 @@
   </template>
 
   <template v-slot:default="{ isActive }">
-    <v-card title="Dialog">
+    <v-card title="Station History">
       <v-card-text>
         <v-table theme="dark">
           <thead>
@@ -32,7 +32,7 @@
             <tr
             v-for="h in history" :key="h.id">
             <td><v-img :src="h.art"></v-img></td>
-            <td>{{ h.title }} - {{ h.artist }}</td>
+            <td>{{ h.title }} - {{ h.artist }} <span class="text-s6 text-grey-darken-1" v-if="h.isRequest == true">[Listener Request]</span></td>
             <td>{{ new Date(h.played_at).toLocaleTimeString() }} ({{ h.played_ago }})</td>
           </tr>
           </tbody>
@@ -41,9 +41,9 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-
+        <v-btn text="Refresh" @click="refreshHistory()"></v-btn>
         <v-btn
-          text="Close Dialog"
+          text="Close"
           @click="isActive.value = false"
         ></v-btn>
       </v-card-actions>

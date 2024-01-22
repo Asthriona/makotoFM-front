@@ -7,6 +7,8 @@ export const useMetaStore = defineStore('metadata', {
         album: "",
         art: "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png",
         isLive: false,
+        isRequest: false,
+        id: "",
         next: {
             title: "",
             artist: "",
@@ -21,11 +23,13 @@ export const useMetaStore = defineStore('metadata', {
     }),
     actions: {
         setMetadata(data) {
+            this.id = data.id,
             this.title = data.title,
                 this.artist = data.artist,
                 this.album = data.album,
                 this.art = data.art ? data.art : "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png",
                 this.isLive = data.isLive,
+                this.isRequest = data.isRequest
                 this.next = {
                     title: data.next.title,
                     artist: data.next.artist,
