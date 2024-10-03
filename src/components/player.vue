@@ -92,13 +92,13 @@ export default {
             notifData: "",
             track: {
                 title: "Hello!",
-                artist: "Cloudsdale Radio",
+                artist: "MakotoFM",
                 art: "https://cdn.asthriona.com/i/2022/08/_pn_220815_0628AM07114.png",
             },
             streams: [
                 {
                     name: "Main Stream",
-                    url: "https://jp-broadcaster.cloudsdaleradio.com/mr-relay.mp3",
+                    url: "https://frrelay.cloudsdaleradio.com/mr-relay.mp3",
                 },
                 // {
                 //   name: "Fail Safe (France)",
