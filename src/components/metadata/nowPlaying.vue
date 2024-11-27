@@ -10,9 +10,8 @@
           <v-badge content="[Listener request]" v-if="useStore.next.isRequest == true"><span transition="scroll-x-transition" class="text-h4">{{ useStore.title }}</span></v-badge>
       <span transition="scroll-x-transition" class="text-h4" v-else>{{ useStore.title }}</span>
         </transition>
-        <transition name="slide-fade" mode="out-in">
-          <span class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.artist }}</span>
-        </transition>
+        <span v-if="useStore.next.isRequest == true" class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.artist }}</span>
+        <span v-else class="text-h5 text-grey-darken-1 font-weight-black">{{ useStore.artist }}</span>
       </div>
     </div>
   </template>
