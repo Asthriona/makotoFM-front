@@ -21,10 +21,25 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-h5">
+          Version 1.2
+          <v-list-item-title>Add "Requested" badge next to title when the song has been requested.</v-list-item-title>
+          <v-list-item-title>Add "Now Playing" metadata to player store</v-list-item-title>
+          <v-list-item-title>Add "Playing Next" under the player</v-list-item-title>
+          <v-list-item-title>Add History</v-list-item-title>
+          <v-list-item-title>Update player store</v-list-item-title>
+          <v-list-item-title>Update Text Styling</v-list-item-title>
+          <v-list-item-title>Update API Link (Now take the station SID)</v-list-item-title>
+          <v-list-item-title>Update Stream change handling</v-list-item-title>
+          <v-list-item-title>Update Fallback stream is now set to Cloudsdale Radio fallback.</v-list-item-title>
+          <v-list-item-title>Update Stream pause function</v-list-item-title>
+          <v-list-item-title>Move metadata to it's own component.</v-list-item-title>
+        </v-list-item>
+        <v-list-item class="text-h5">
           Known Bug:
           <v-list-item-title>
             Player: The player plays the cached buffer when unpausing the
-            streams.
+            streams. <br />
+            <b><i>Should be fixed by Version 1.2</i></b>
           </v-list-item-title>
         </v-list-item>
       </v-list>
