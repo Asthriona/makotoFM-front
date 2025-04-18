@@ -97,6 +97,7 @@ export default {
       playing: false,
       buffering: false,
       playerError: false,
+      isPaused: false,
       volume: 50,
       notificationPermissions: false,
       notifEnabled: false,
@@ -147,27 +148,36 @@ export default {
       return notif;
     },
     play() {
-      this.buffering = false;
-      this.player.volume = localStorage.getItem("CR_volume") || 0.5;
-      this.player.preload = "none";
-      this.player.play().catch((err) => {
-        this.playerError = true;
+      if(this.isPaused) {
         this.buffering = false;
-        console.log(err);
-        console.log("The player goofed... falling back");
-        this.track.title = "The player goofed. Falling back...";
-        this.track.artist = "Yikes!";
-        this.player.play("https://jp-broadcaster.cloudsdaleradio.com/cloudsdaleradio.mp3");
-      });
-      this.player.addEventListener("playing", () => {
+        this.player.volume = localStorage.getItem("CR_volume");
         this.playing = true;
+        return this.isPaused = false;
+      } else {
         this.buffering = false;
-      });
+        this.player.volume = localStorage.getItem("CR_volume") || 0.5;
+        this.player.preload = "none";
+        this.player.play().catch((err) => {
+          this.playerError = true;
+          this.buffering = false;
+          console.log(err);
+          console.log("The player goofed... falling back");
+          this.track.title = "The player goofed. Falling back...";
+          this.track.artist = "Yikes!";
+          this.player.src = this.streams[1];
+          this.player.play();
+        });
+        this.player.addEventListener("playing", () => {
+          this.playing = true;
+          this.buffering = false;
+        });
+      }
     },
     stop() {
-      this.player.pause();
-      this.player.currentTime = 0;
+      // No more stopping the stream to pause!
+      this.player.volume = 0;
       this.playing = false;
+      this.isPaused = true;
     },
     HandleVolume() {
       this.player.volume = this.volume;
