@@ -56,7 +56,7 @@
         <v-col class="primary lighten-2 py-4 text-center white--text" cols="12">
           2013 - {{ new Date().getFullYear() }} —
           <strong>Sora Media Network inc.</strong> <br />
-          Powered by <strong>Stellar Corporation</strong>
+          Powered by <strong>NOZORA Production</strong>
           <v-col cols="12" class="primary lighten-2 py-4 text-center white--text">
             <!-- <span>Proudly Powered by:</span> <br />
               <div class="parthner" v-for="item in parthners" :key="item.name">
